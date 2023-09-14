@@ -28,9 +28,7 @@ WITH VMMC_CTE AS (
             ec_vmmc_follow_up_visit.follow_up_visit_type = 'routine'
 )
 SELECT
-    first_name,
-    middle_name,
-    last_name,
+        first_name || ' ' || middle_name || ' ' || last_name AS NAMES,
     reffered_from,
     tested_hiv,
     hiv_result,
@@ -42,9 +40,7 @@ SELECT
     MAX(NAE) AS NAE
 FROM VMMC_CTE
 GROUP BY
-    first_name,
-    middle_name,
-    last_name,
+    first_name || ' ' || middle_name || ' ' || last_name,
     reffered_from,
     tested_hiv,
     hiv_result,
