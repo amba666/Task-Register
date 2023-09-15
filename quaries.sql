@@ -11,7 +11,8 @@ WITH VMMC_CTE AS (
         ec_vmmc_follow_up_visit.visit_number,
         ec_vmmc_follow_up_visit.followup_visit_date AS visit_date,
         ec_vmmc_follow_up_visit.post_op_adverse_event_occur AS post_op_adverse,
-        ec_vmmc_notifiable_ae.did_client_experience_nae AS NAE
+        ec_vmmc_notifiable_ae.did_client_experience_nae AS NAE,
+        ec_family_member.dob
     FROM
         ec_vmmc_enrollment
             INNER JOIN
@@ -28,7 +29,8 @@ WITH VMMC_CTE AS (
             ec_vmmc_follow_up_visit.follow_up_visit_type = 'routine'
 )
 SELECT
-        first_name || ' ' || middle_name || ' ' || last_name AS NAMES,
+        first_name || ' ' || middle_name || ' ' || last_name AS names,
+    (strftime('%Y', 'now') - strftime('%Y', dob)) - (strftime('%m-%d', 'now') < strftime('%m-%d', dob)) AS age,
     reffered_from,
     tested_hiv,
     hiv_result,
@@ -40,7 +42,8 @@ SELECT
     MAX(NAE) AS NAE
 FROM VMMC_CTE
 GROUP BY
-    first_name || ' ' || middle_name || ' ' || last_name,
+    names,
+    age,
     reffered_from,
     tested_hiv,
     hiv_result,
